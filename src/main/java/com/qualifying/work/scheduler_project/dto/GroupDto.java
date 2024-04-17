@@ -14,7 +14,7 @@ public class GroupDto {
     private UUID id;
     @NotNull
     private String name;
-
+    @NotNull
     private CatalogDto catalog;
 
 }

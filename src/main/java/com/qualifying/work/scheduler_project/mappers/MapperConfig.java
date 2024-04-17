@@ -10,4 +10,8 @@ public class MapperConfig {
     public UserMapper userMapper() {
         return Mappers.getMapper(UserMapper.class);
     }
+//    @Bean
+//    public CatalogMapper catalogMapper() {
+//        return Mappers.getMapper(CatalogMapper.class);
+//    }
 }

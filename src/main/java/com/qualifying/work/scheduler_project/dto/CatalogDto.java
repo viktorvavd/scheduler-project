@@ -21,6 +21,6 @@ public class CatalogDto {
     @NotNull
     private String name;
     @NotNull
-    private UserDto owner;
-    private CatalogDto parentCatalog;
+    private UUID ownerID;
+    private UUID parentCatalogID;
 }

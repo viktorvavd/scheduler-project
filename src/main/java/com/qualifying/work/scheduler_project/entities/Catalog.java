@@ -20,11 +20,11 @@ public class Catalog {
 
     @Column(nullable = false)
     private String name;
-    @OneToOne
+    @ManyToOne
     private UserEntity owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.EAGER)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private Catalog parentCatalog;
 
 }

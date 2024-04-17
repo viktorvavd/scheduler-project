@@ -6,9 +6,7 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-//@Data
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
