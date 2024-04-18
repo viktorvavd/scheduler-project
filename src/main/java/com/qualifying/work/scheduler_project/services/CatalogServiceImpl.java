@@ -1,6 +1,7 @@
 package com.qualifying.work.scheduler_project.services;
 
 import com.qualifying.work.scheduler_project.dto.CatalogDto;
+import com.qualifying.work.scheduler_project.dto.GroupDto;
 import com.qualifying.work.scheduler_project.dto.UserDto;
 import com.qualifying.work.scheduler_project.entities.Catalog;
 import com.qualifying.work.scheduler_project.entities.UserCatalog;
@@ -85,7 +86,17 @@ public class CatalogServiceImpl implements CatalogService{
 
 
     @Override
-    public CatalogDto getParentCatalog() {
+    public CatalogDto getParentCatalog(UUID catalogID) {
+        return findById(findById(catalogID).getParentCatalogID());
+    }
+
+    @Override
+    public List<CatalogDto> getChildCatalogs(UUID catalogID) {
         return null;
+    }
+
+    @Override
+    public List<GroupDto> getGroupsByCatalogId(UUID catalogID) {
+        return findById(catalogID).getGroups();
     }
 }

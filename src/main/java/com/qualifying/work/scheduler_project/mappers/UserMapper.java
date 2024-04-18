@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class UserMapper {
     final UserCatalogMapper userCatalogMapper;
-//    final GroupMapper groupMapper;
+    final GroupMapper groupMapper;
     public UserEntity userDtoToEntity(UserDto userDto){
         if ( userDto == null ) {
             return null;
@@ -23,7 +23,7 @@ public class UserMapper {
         userEntity.setLogin( userDto.getLogin() );
         userEntity.setPassword( userDto.getPassword() );
         userEntity.setUserCatalogList(userDto.getUserCatalogList().stream().map(userCatalogMapper::dtoToEntity).toList());
-//        userEntity.setGroups(userDto.getGroups().stream().map(groupMapper::dtoToEntity).toList());
+        userEntity.setGroups(userDto.getGroups().stream().map(groupMapper::dtoToEntity).toList());
 
         return userEntity;
     }
@@ -38,7 +38,7 @@ public class UserMapper {
         userDto1.setLogin( userDto.getLogin() );
         userDto1.setPassword( userDto.getPassword() );
         userDto1.setUserCatalogList( userDto.getUserCatalogList().stream().map(userCatalogMapper::entityToDto).toList() );
-//        userDto1.setGroups( userDto.getGroups().stream().map(groupMapper::entityToDto).toList() );
+        userDto1.setGroups( userDto.getGroups().stream().map(groupMapper::entityToDto).toList() );
 
         return userDto1;
     }

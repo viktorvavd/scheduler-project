@@ -26,8 +26,8 @@ public class Event {
     @Column(nullable = false)
     private Calendar endTime;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id",nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private GroupEntity group;
+//    @ManyToOne
+//    @JoinColumn(name = "group_id",nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private GroupEntity group;
 }

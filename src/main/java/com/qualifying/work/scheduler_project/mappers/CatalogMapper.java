@@ -19,6 +19,7 @@ public class CatalogMapper {
     final UserMapper userMapper;
     final UserRepository userRepository;
     final CatalogRepository catalogRepository;
+    final GroupMapper groupMapper;
     public CatalogDto entityToDto(Catalog catalog){
         if(catalog == null){
             return null;
@@ -35,6 +36,7 @@ public class CatalogMapper {
             catalogDto.setParentCatalogID(catalog.getParentCatalog().getId());
             catalogDto.setParentCatalogName(catalog.getParentCatalog().getName());
         }
+        catalogDto.setGroups(catalog.getGroups().stream().map(groupMapper::entityToDto).toList());
         return catalogDto;
     }
 
@@ -55,7 +57,8 @@ public class CatalogMapper {
                 catalogDto.getId(),
                 catalogDto.getName(),
                 owner,
-                parrentCatalog
+                parrentCatalog,
+                catalogDto.getGroups().stream().map(groupMapper::dtoToEntity).toList()
         );
     }
 }

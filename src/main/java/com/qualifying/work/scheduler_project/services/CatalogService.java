@@ -1,6 +1,7 @@
 package com.qualifying.work.scheduler_project.services;
 
 import com.qualifying.work.scheduler_project.dto.CatalogDto;
+import com.qualifying.work.scheduler_project.dto.GroupDto;
 import com.qualifying.work.scheduler_project.dto.UserDto;
 import com.qualifying.work.scheduler_project.entities.Catalog;
 
@@ -14,7 +15,7 @@ public interface CatalogService {
     CatalogDto updateCatalog(CatalogDto catalogDto);
     void deleteById(UUID id);
     CatalogDto findById(UUID id);
-
-//    UUID getOwnerID(UUID catalogId);
-    CatalogDto getParentCatalog();
+    CatalogDto getParentCatalog(UUID catalogID);
+    List<GroupDto> getGroupsByCatalogId(UUID catalogID);
+    List<CatalogDto> getChildCatalogs(UUID catalogID);
 }

@@ -25,6 +25,6 @@ public class EventDto {
     private Calendar startTime;
     @NotNull
     private Calendar endTime;
-
-    private GroupDto group;
+//
+//    private GroupDto group;
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -14,7 +15,8 @@ public class GroupDto {
     private UUID id;
     @NotNull
     private String name;
-    @NotNull
-    private CatalogDto catalog;
+    private List<EventDto> events;
+//    @NotNull
+//    private CatalogDto catalog;
 
 }

@@ -10,13 +10,12 @@ import java.util.UUID;
 public interface GroupService {
     List<GroupEntity> getAllGroupEntities();
     List<GroupDto> getAllGroups();
-    List<GroupDto> getAllGroupsByEventID(UUID eventID);
-    List<GroupDto> getAllUserGroups(UUID userID);
-
+//    List<GroupDto> getAllUserGroups(UUID userID);
+//    List<GroupDto> getGroupsByCatalogId(UUID catalogID);
     GroupDto getGroupById(UUID groupID);
     GroupDto createGroup(GroupDto groupDto);
     GroupDto updateGroup(GroupDto groupDto);
 
     void deleteGroup(UUID groupID);
-    void enrollUserToGroup(UUID userID, UUID groupID);
+
 }
