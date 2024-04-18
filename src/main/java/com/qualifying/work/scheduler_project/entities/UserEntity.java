@@ -2,6 +2,8 @@ package com.qualifying.work.scheduler_project.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,4 +26,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserCatalog> userCatalogList;
+
+    @ManyToMany
+    @OnDelete(action = OnDeleteAction.NO_ACTION)
+    private List<GroupEntity> groups;
 }

@@ -6,9 +6,11 @@ import com.qualifying.work.scheduler_project.entities.Catalog;
 import com.qualifying.work.scheduler_project.entities.UserCatalog;
 import com.qualifying.work.scheduler_project.entities.UserEntity;
 import com.qualifying.work.scheduler_project.mappers.CatalogMapper;
+import com.qualifying.work.scheduler_project.mappers.UserMapper;
 import com.qualifying.work.scheduler_project.repositories.CatalogRepository;
 import com.qualifying.work.scheduler_project.repositories.UserCatalogRepository;
 import com.qualifying.work.scheduler_project.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -22,26 +24,30 @@ public class CatalogServiceImpl implements CatalogService{
     final CatalogMapper catalogMapper;
     final UserCatalogRepository userCatalogRepository;
     final UserRepository userRepository;
+    final UserMapper userMapper;
     @Override
     public List<CatalogDto> getAllCatalogs() {
-        return null;
+        return catalogRepository.findAll().stream().map(catalogMapper::entityToDto).toList();
     }
 
     @Override
     public List<Catalog> getAllCatalogEntities() {
-        return null;
+        return catalogRepository.findAll();
     }
 
     @Override
+    @Transactional
     public CatalogDto createCatalog(CatalogDto catalogDto) {
         Catalog catalog = catalogMapper.dtoToEntity(catalogDto);
         catalog = catalogRepository.save(catalog);
-//        UserEntity owner = catalog.getOwner();
-//
-//        UserCatalog userCatalog = new UserCatalog();
-//        userCatalog.setUser(owner);
-//        userCatalog.setCatalog(catalog);
-//        userCatalog.setAmin(true);
+        UserEntity owner = catalog.getOwner();
+
+        UserCatalog userCatalog = new UserCatalog();
+        userCatalog.setUser(owner);
+        userCatalog.setCatalog(catalog);
+        userCatalog.setAmin(true);
+
+        userCatalogRepository.save(userCatalog);
 //
 ////        userCatalog =
 //        owner.getUserCatalogList().add(userCatalogRepository.save(userCatalog));
@@ -51,25 +57,32 @@ public class CatalogServiceImpl implements CatalogService{
     }
 
     @Override
+    @Transactional
     public CatalogDto updateCatalog(CatalogDto catalogDto) {
-        return null;
+        Catalog catalog = catalogMapper.dtoToEntity(catalogDto);
+        catalog = catalogRepository.save(catalog);
+        return catalogMapper.entityToDto(catalog);
     }
 
     @Override
     public void deleteById(UUID id) {
-
+        try {
+            catalogRepository.deleteById(id);
+        }catch (Exception e){
+            throw new RuntimeException("No CATALOG with id: "+id);
+        }
     }
 
     @Override
     public CatalogDto findById(UUID id) {
-        return null;
+        if(catalogRepository.findById(id).isPresent()){
+            return catalogMapper.entityToDto(catalogRepository.findById(id).get());
+        }else{
+            throw new RuntimeException("No CATALOG with id: "+ id);
+        }
     }
 
-    @Override
-    public UserDto getOwner(UUID catalogId) {
-        CatalogDto catalogDto = findById(catalogId);
-        return null;
-    }
+
 
     @Override
     public CatalogDto getParentCatalog() {

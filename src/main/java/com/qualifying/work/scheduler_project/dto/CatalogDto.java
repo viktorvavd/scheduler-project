@@ -23,4 +23,5 @@ public class CatalogDto {
     @NotNull
     private UUID ownerID;
     private UUID parentCatalogID;
+    private String parentCatalogName;
 }

@@ -30,11 +30,14 @@ public class CatalogMapper {
         catalogDto.setOwnerID(catalog.getOwner().getId());
         if(catalog.getParentCatalog() == null){
             catalogDto.setParentCatalogID(null);
+            catalogDto.setParentCatalogName(null);
         }else{
             catalogDto.setParentCatalogID(catalog.getParentCatalog().getId());
+            catalogDto.setParentCatalogName(catalog.getParentCatalog().getName());
         }
         return catalogDto;
     }
+
     public Catalog dtoToEntity(CatalogDto catalogDto){
         if(catalogDto == null){
             return null;

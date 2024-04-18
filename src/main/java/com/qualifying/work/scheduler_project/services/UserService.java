@@ -19,4 +19,6 @@ public interface UserService {
 
     List<CatalogDto> getAllUserCatalogs(UUID userId);
     void addNewCatalog(UUID userId, CatalogDto catalogDto, boolean isAdmin);
+
+    UserDto getCatalogOwner(UUID catalogId);
 }

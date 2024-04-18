@@ -16,9 +16,9 @@ public class UserCatalogDto {
     private UUID id;
 
     @NotNull
-    private UserDto user;
+    private UUID userID;
     @NotNull
-    private CatalogDto catalog;
+    private UUID catalogID;
 
     @NotNull
     private boolean isAmin;

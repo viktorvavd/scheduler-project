@@ -15,6 +15,6 @@ public interface CatalogService {
     void deleteById(UUID id);
     CatalogDto findById(UUID id);
 
-    UserDto getOwner(UUID catalogId);
+//    UUID getOwnerID(UUID catalogId);
     CatalogDto getParentCatalog();
 }

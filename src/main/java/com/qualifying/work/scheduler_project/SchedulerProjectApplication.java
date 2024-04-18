@@ -19,6 +19,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootApplication
 @RequiredArgsConstructor
@@ -56,6 +57,7 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				null,
 				"catalog1",
 				userDto.getId(),
+				null,
 				null
 		);
 		catalog1 = catalogService.createCatalog(catalog1);
@@ -63,13 +65,15 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				null,
 				"catalog2",
 				userDto.getId(),
+				null,
 				null
 		);
 		catalog2 = catalogService.createCatalog(catalog2);
 		CatalogDto catalog3 = new CatalogDto(
 				null,
 				"catalog3",
-				userDto.getId(),
+				userAdmin.getId(),
+				null,
 				null
 		);
 		catalog3 = catalogService.createCatalog(catalog3);
@@ -83,22 +87,30 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 //						)
 //		);
 
-		userService.addNewCatalog(userAdmin.getId(), catalog1, true);
-		userService.addNewCatalog(userAdmin.getId(), catalog2, true);
-		userService.addNewCatalog(userAdmin.getId(), catalog3, true);
+//		userService.addNewCatalog(userAdmin.getId(), catalog1, true);
+//		userService.addNewCatalog(userAdmin.getId(), catalog2, true);
+//		userService.addNewCatalog(userAdmin.getId(), catalog3, true);
+//
+//		userService.addNewCatalog(userDto.getId(), catalog1, true);
+//		userService.addNewCatalog(userDto.getId(), catalog2, true);
 
-		userService.addNewCatalog(userDto.getId(), catalog1, true);
-		userService.addNewCatalog(userDto.getId(), catalog2, true);
-
-
-
+		UUID ownerID1 = userService.getCatalogOwner(catalog1.getId()).getId();
+		UUID ownerID2 = userService.getCatalogOwner(catalog2.getId()).getId();
+		System.out.println(userService.getUserById(ownerID1));
+		System.out.println(userService.getUserById(ownerID2));
+				System.out.println("------------------------------------------------------------------------");
 		System.out.println(Arrays.toString(userService.getAllUserCatalogs(userDto.getId()).stream().map(CatalogDto::getName).toArray()));
-		System.out.println("------------------------------------------------------------------------");
-		System.out.println(userService.getAllUserCatalogs(userDto.getId()).size());
-		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
-		System.out.println(Arrays.toString(userService.getAllUserCatalogs(userAdmin.getId()).stream().map(CatalogDto::getName).toArray()));
-		System.out.println("------------------------------------------------------------------------");
-		System.out.println(userService.getAllUserCatalogs(userAdmin.getId()).size());
+
+
+//
+//
+//		System.out.println(Arrays.toString(userService.getAllUserCatalogs(userDto.getId()).stream().map(CatalogDto::getName).toArray()));
+//		System.out.println("------------------------------------------------------------------------");
+//		System.out.println(userService.getAllUserCatalogs(userDto.getId()).size());
+//		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+//		System.out.println(Arrays.toString(userService.getAllUserCatalogs(userAdmin.getId()).stream().map(CatalogDto::getName).toArray()));
+//		System.out.println("------------------------------------------------------------------------");
+//		System.out.println(userService.getAllUserCatalogs(userAdmin.getId()).size());
 
 	}
 }

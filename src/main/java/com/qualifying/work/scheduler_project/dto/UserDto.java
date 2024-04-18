@@ -17,4 +17,5 @@ public class UserDto {
     @NotNull
     private String password;
     private List<UserCatalogDto> userCatalogList;
+    private List<GroupDto> groups;
 }

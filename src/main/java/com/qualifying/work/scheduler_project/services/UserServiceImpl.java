@@ -10,6 +10,7 @@ import com.qualifying.work.scheduler_project.mappers.UserMapper;
 import com.qualifying.work.scheduler_project.repositories.CatalogRepository;
 import com.qualifying.work.scheduler_project.repositories.UserCatalogRepository;
 import com.qualifying.work.scheduler_project.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -39,10 +40,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto user) {
         UserEntity userEntity = userRepository.save(userMapper.userDtoToEntity(user));
-        UserDto userDto = userMapper.userEntityToDto(userEntity);
-        return userDto;
+        return userMapper.userEntityToDto(userEntity);
     }
 
     @Override
@@ -55,6 +56,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(UserDto user) {
         if(userRepository.findById(user.getId()).isPresent()){
             UserEntity userEntity = userMapper.userDtoToEntity(user);
@@ -91,6 +93,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void addNewCatalog(UUID userId, CatalogDto catalogDto, boolean isAdmin) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow();
         if(catalogRepository.findById(catalogDto.getId()).isEmpty()){
@@ -103,6 +106,12 @@ public class UserServiceImpl implements UserService{
                 isAdmin
         );
         userCatalogRepository.save(userCatalog);
-//        userRepository.save(userEntity);
+    }
+
+    @Override
+    public UserDto getCatalogOwner(UUID catalogId) {
+        CatalogDto catalogDto = catalogMapper.entityToDto(catalogRepository.findById(catalogId).orElseThrow());
+
+        return getUserById(catalogDto.getOwnerID());
     }
 }

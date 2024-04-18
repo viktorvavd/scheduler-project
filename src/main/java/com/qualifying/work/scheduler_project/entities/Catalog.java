@@ -24,7 +24,7 @@ public class Catalog {
     private UserEntity owner;
 
     @ManyToOne(fetch = FetchType.EAGER)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Catalog parentCatalog;
 
 }
