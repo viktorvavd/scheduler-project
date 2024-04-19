@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,6 +24,9 @@ public class Catalog {
     private String name;
     @ManyToOne
     private UserEntity owner;
+
+    @Column(nullable = false, unique = true)
+    private String code;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)

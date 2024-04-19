@@ -15,6 +15,7 @@ public interface CatalogService {
     CatalogDto updateCatalog(CatalogDto catalogDto);
     void deleteById(UUID id);
     CatalogDto findById(UUID id);
+    CatalogDto findByCode(String code);
     CatalogDto getParentCatalog(UUID catalogID);
     List<GroupDto> getGroupsByCatalogId(UUID catalogID);
     List<CatalogDto> getChildCatalogs(UUID catalogID);

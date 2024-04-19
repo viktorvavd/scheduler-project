@@ -37,6 +37,15 @@ public class GroupServiceImpl implements GroupService{
     }
 
     @Override
+    public GroupEntity getGroupEntityById(UUID groupID) {
+        if(groupRepository.findById(groupID).isPresent()){
+            return groupRepository.findById(groupID).get();
+        }else{
+            throw new RuntimeException("No GROUP with id:" + groupID);
+        }
+    }
+
+    @Override
     public GroupDto createGroup(GroupDto groupDto) {
         GroupEntity groupEntity = groupRepository.save(groupMapper.dtoToEntity(groupDto));
         return groupMapper.entityToDto(groupEntity);

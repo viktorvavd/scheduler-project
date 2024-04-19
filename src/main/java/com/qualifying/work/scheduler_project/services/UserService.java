@@ -1,11 +1,10 @@
 package com.qualifying.work.scheduler_project.services;
 
-import com.qualifying.work.scheduler_project.dto.CatalogDto;
-import com.qualifying.work.scheduler_project.dto.GroupDto;
-import com.qualifying.work.scheduler_project.dto.UserCatalogDto;
-import com.qualifying.work.scheduler_project.dto.UserDto;
+import com.qualifying.work.scheduler_project.dto.*;
 import com.qualifying.work.scheduler_project.entities.UserEntity;
 
+import javax.xml.crypto.Data;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +19,8 @@ public interface UserService {
     void deleteUser(UUID id);
 
     void addAdmin(UUID catalogId, String userLogin);
+    void enrollUserToCatalog(UUID userId,  String catalogCode);
+
     List<UserDto> getAdmins(UUID catalogId);
     void removeAdmin(UUID catalogId, String userLogin);
 
@@ -29,6 +30,7 @@ public interface UserService {
     void enrollUserToGroup(UUID userID, UUID groupID);
     void removeUserFromGroup(UUID userID, UUID groupID);
     List<GroupDto> getAllUserGroups(UUID userID);
+//    List<EventDto> getSchedule(Date startDate, Date endDate);
 
     UserDto getCatalogOwner(UUID catalogId);
 }

@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +40,7 @@ public class CatalogServiceImpl implements CatalogService{
     @Override
     @Transactional
     public CatalogDto createCatalog(CatalogDto catalogDto) {
+        catalogDto.setCode(generateCode());
         Catalog catalog = catalogMapper.dtoToEntity(catalogDto);
         catalog = catalogRepository.save(catalog);
         UserEntity owner = catalog.getOwner();
@@ -49,12 +51,12 @@ public class CatalogServiceImpl implements CatalogService{
         userCatalog.setAmin(true);
 
         userCatalogRepository.save(userCatalog);
-//
-////        userCatalog =
-//        owner.getUserCatalogList().add(userCatalogRepository.save(userCatalog));
-//        userRepository.save(owner);
-//        catalog = catalogRepository.save(catalog);
         return catalogMapper.entityToDto(catalog);
+    }
+
+    private String generateCode(){
+        String generateUUIDNo = String.format("%010d",new BigInteger(UUID.randomUUID().toString().replace("-",""),16));
+        return generateUUIDNo.substring( generateUUIDNo.length() - 10);
     }
 
     @Override
@@ -83,6 +85,14 @@ public class CatalogServiceImpl implements CatalogService{
         }
     }
 
+    @Override
+    public CatalogDto findByCode(String code) {
+        Catalog catalog = catalogRepository.findByCode(code);
+        if(catalog == null){
+            throw new RuntimeException("No CATALOG with code: "+ code);
+        }
+        return catalogMapper.entityToDto(catalog);
+    }
 
 
     @Override

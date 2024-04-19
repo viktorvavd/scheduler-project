@@ -11,6 +11,7 @@ import java.util.UUID;
 @Repository
 public interface UserCatalogRepository extends JpaRepository<UserCatalog, UUID> {
     List<UserCatalog> findAllByUser(UserEntity userEntity);
+    List<UserCatalog> findAllByUserId(UUID user_id);
     List<UserCatalog> findAllByCatalog_Id(UUID catalog_id);
     UserCatalog findByUserIdAndCatalogId(UUID user_id, UUID catalog_id);
 

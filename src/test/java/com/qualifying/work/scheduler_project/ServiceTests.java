@@ -6,7 +6,6 @@ import com.qualifying.work.scheduler_project.dto.UserDto;
 import com.qualifying.work.scheduler_project.services.CatalogService;
 import com.qualifying.work.scheduler_project.services.GroupService;
 import com.qualifying.work.scheduler_project.services.UserService;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,8 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.UUID;
 
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 @SpringBootTest
@@ -53,6 +51,7 @@ public class ServiceTests {
                 user.getId(),
                 null,
                 null,
+                null,
                 new ArrayList<>()
         );
         catalog1 = catalogService.createCatalog(catalog1);
@@ -60,6 +59,7 @@ public class ServiceTests {
                 null,
                 "catalog2",
                 admin.getId(),
+                null,
                 null,
                 null,
                 new ArrayList<>()
@@ -73,6 +73,58 @@ public class ServiceTests {
         assertEquals(ownerID2,admin.getId());
 
 //        userService.addNewCatalog(user.getId(), catalog1,false);
+    }
+
+    @Test
+    public void addAndRemoveCatalogTest(){
+        UserDto user = new UserDto();
+        user.setId(null);
+        user.setLogin("qwwejvnweovi");
+        user.setPassword("1111");
+        user.setUserCatalogList(new ArrayList<>());
+        user.setGroups(new ArrayList<>());
+        user = userService.createUser(user);
+
+        UserDto admin = new UserDto();
+        admin.setId(null);
+        admin.setLogin("ADMINISTRATOR");
+        admin.setPassword("1234");
+        admin.setUserCatalogList(new ArrayList<>());
+        admin.setGroups(new ArrayList<>());
+        admin = userService.createUser(admin);
+
+
+        CatalogDto catalog1 = new CatalogDto(
+                null,
+                "catalog143342",
+                admin.getId(),
+                null,
+                null,
+                null,
+                new ArrayList<>()
+        );
+        catalog1 = catalogService.createCatalog(catalog1);
+        CatalogDto catalog2 = new CatalogDto(
+                null,
+                "catalog1488",
+                admin.getId(),
+                null,
+                null,
+                null,
+                new ArrayList<>()
+        );
+        catalog2 = catalogService.createCatalog(catalog2);
+
+
+        userService.addNewCatalog(user.getId(), catalog1,false);
+        userService.addNewCatalog(user.getId(), catalog2,false);
+
+        assertEquals(userService.getAdmins(catalog1.getId()).size(), 1);
+        assertEquals(userService.getAdmins(catalog1.getId()).get(0).getLogin(), admin.getLogin());
+        assertEquals(userService.getAllUserCatalogs(user.getId()).size(), 2);
+
+        userService.removeCatalog(user.getId(), catalog1.getId());
+        assertEquals(userService.getAllUserCatalogs(user.getId()).size(), 1);
     }
     @Test
     public void enrollAndRemoveGroupTest(){
@@ -133,6 +185,7 @@ public class ServiceTests {
                 admin.getId(),
                 null,
                 null,
+                null,
                 new ArrayList<>()
         );
         catalog1 = catalogService.createCatalog(catalog1);
@@ -140,6 +193,7 @@ public class ServiceTests {
                 null,
                 "catalog2",
                 admin.getId(),
+                null,
                 null,
                 null,
                 new ArrayList<>()

@@ -57,6 +57,7 @@ public class CatalogMapper {
                 catalogDto.getId(),
                 catalogDto.getName(),
                 owner,
+                catalogDto.getCode(),
                 parrentCatalog,
                 catalogDto.getGroups().stream().map(groupMapper::dtoToEntity).toList()
         );

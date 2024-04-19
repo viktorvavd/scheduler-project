@@ -22,5 +22,6 @@ public class CatalogDto {
     private UUID ownerID;
     private UUID parentCatalogID;
     private String parentCatalogName;
+    private String code;
     private List<GroupDto> groups;
 }

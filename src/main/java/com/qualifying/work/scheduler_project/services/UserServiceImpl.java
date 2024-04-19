@@ -11,7 +11,6 @@ import com.qualifying.work.scheduler_project.mappers.CatalogMapper;
 import com.qualifying.work.scheduler_project.mappers.GroupMapper;
 import com.qualifying.work.scheduler_project.mappers.UserMapper;
 import com.qualifying.work.scheduler_project.repositories.CatalogRepository;
-import com.qualifying.work.scheduler_project.repositories.GroupRepository;
 import com.qualifying.work.scheduler_project.repositories.UserCatalogRepository;
 import com.qualifying.work.scheduler_project.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -51,6 +50,10 @@ public class UserServiceImpl implements UserService{
     public UserDto createUser(UserDto user) {
         if(user == null){
             throw new RuntimeException("UserDTO is null");
+        }
+        UserEntity userEntity1 = userRepository.findByLogin(user.getLogin());
+        if(userEntity1 != null){
+            throw new RuntimeException("Unavailable user login: "+ user.getLogin());
         }
         UserEntity userEntity = userRepository.save(userMapper.userDtoToEntity(user));
         return userMapper.userEntityToDto(userEntity);
@@ -104,8 +107,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
+    public void enrollUserToCatalog(UUID userId, String catalogCode) {
+        addNewCatalog(userId, catalogService.findByCode(catalogCode), false);
+    }
+
+    @Override
     public List<UserDto> getAdmins(UUID catalogId) {
         List<UserCatalog> userCatalogList = userCatalogRepository.findAllByCatalog_Id(catalogId);
+        userCatalogList.removeIf(userCatalog -> !userCatalog.isAmin());
         List<UserDto> users = new ArrayList<>();
         for(UserCatalog userCatalog: userCatalogList){
             users.add(getUserById(userCatalog.getUser().getId()));
@@ -132,8 +142,8 @@ public class UserServiceImpl implements UserService{
             throw new RuntimeException("UserID is null");
         }
 //        UserEntity userEntity = userMapper.userDtoToEntity(getUserById(userId));
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow();
-        List<UserCatalog> userCatalogList = userCatalogRepository.findAllByUser(userEntity);
+//        UserEntity userEntity = userRepository.findById(userId).orElseThrow();
+        List<UserCatalog> userCatalogList = userCatalogRepository.findAllByUserId(userId);
 
         List<Catalog> catalogs = userCatalogList.stream().map(UserCatalog::getCatalog).toList();
         List<CatalogDto> catalogDtoList = new ArrayList<>();
@@ -171,6 +181,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    @Transactional
     public void removeCatalog(UUID userID, UUID catalogID) {
         if(userID == null || catalogID == null){
             throw new RuntimeException("UserID or CatalogID is null");
