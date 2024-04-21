@@ -15,6 +15,7 @@ public interface UserService {
     UserDto createUser(UserDto user);
     UserDto getUserById(UUID id);
     UserDto getUserByLogin(String login);
+    UserDto getUserByLoginAndPassword(String login, String password);
     UserEntity getUserEntityById(UUID id);
     UserDto updateUser(UserDto user);
     void deleteUser(UUID id);

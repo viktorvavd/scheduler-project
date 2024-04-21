@@ -83,6 +83,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserDto getUserByLoginAndPassword(String login, String password) {
+        UserEntity userEntity = userRepository.findByLogin(login);
+        if(userEntity == null){
+            throw new RuntimeException("No such USER login");
+        }
+        if(!password.equals(userEntity.getPassword())){
+            throw new RuntimeException("Password incorrect");
+        }
+        return userMapper.userEntityToDto(userEntity);
+    }
+
+    @Override
     public UserEntity getUserEntityById(UUID id) {
         if(userRepository.findById(id).isPresent())
             return userRepository.findById(id).get();

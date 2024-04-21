@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoginController {
     final UserService userService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody @Valid UserDto userDto) {
-        UserDto user = userService.getUserByLogin(userDto.getLogin());
+        UserDto user = userService.getUserByLoginAndPassword(userDto.getLogin(), userDto.getPassword());
         return ResponseEntity.ok(user);
     }
 }
