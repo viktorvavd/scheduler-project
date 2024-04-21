@@ -115,7 +115,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{userId}/get_catalogs/catalog/enroll_group")
+    @PutMapping("/{userId}/get_catalogs/catalog/groups/enroll_group")
     public ResponseEntity<Void> enrollGroup(@PathVariable UUID userId,
                                          @RequestParam UUID catalogId, @RequestParam UUID groupId){
         userService.enrollUserToGroup(userId, groupId);
@@ -140,6 +140,27 @@ public class UserController {
     @DeleteMapping("/{userId}/get_catalogs/catalog/group/remove")
     public ResponseEntity<Void> removeGroup(@PathVariable UUID userId, @RequestParam UUID groupId){
         groupService.deleteGroup(groupId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{userId}/get_catalogs/catalog/group/add_event")
+    public ResponseEntity<EventDto> addEvent(@PathVariable UUID userId,
+                                             @RequestParam UUID groupId,
+                                             @RequestBody EventDto eventDto){
+        eventDto = eventService.createEvent(eventDto,groupId);
+        return ResponseEntity.ok(eventDto);
+    }
+
+    @PutMapping("/{userId}/get_catalogs/catalog/group/edit_event")
+    public ResponseEntity<EventDto> editEvent(@PathVariable UUID userId,
+                                             @RequestBody EventDto eventDto){
+        eventDto = eventService.updateEvent(eventDto);
+        return ResponseEntity.ok(eventDto);
+    }
+
+    @DeleteMapping("/{userId}/get_catalogs/catalog/group/remove_event")
+    public ResponseEntity<Void> removeEvent(@PathVariable UUID userId, @RequestParam UUID eventId){
+        eventService.deleteEvent(eventId);
         return ResponseEntity.noContent().build();
     }
 
