@@ -44,11 +44,11 @@ public class CatalogMapper {
         if(catalogDto == null){
             return null;
         }
-        Catalog parrentCatalog;
+        Catalog parrentCatalog = new Catalog();
         if(catalogDto.getParentCatalogID() == null){
             parrentCatalog = null;
         }else{
-           parrentCatalog = catalogRepository.findById(catalogDto.getId()).orElseThrow();
+           parrentCatalog = catalogRepository.findById(catalogDto.getParentCatalogID()).orElseThrow();
         }
 
         UserEntity owner = userRepository.findById(catalogDto.getOwnerID()).orElseThrow();

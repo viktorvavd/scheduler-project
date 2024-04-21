@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -22,9 +23,9 @@ public class EventDto {
     private String name;
 
     @NotNull
-    private Calendar startTime;
+    private Date startTime;
     @NotNull
-    private Calendar endTime;
+    private Date endTime;
 //
 //    private GroupDto group;
 }

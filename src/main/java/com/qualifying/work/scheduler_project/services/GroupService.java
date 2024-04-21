@@ -12,8 +12,10 @@ public interface GroupService {
     List<GroupDto> getAllGroups();
     GroupDto getGroupById(UUID groupID);
     GroupEntity getGroupEntityById(UUID groupID);
-    GroupDto createGroup(GroupDto groupDto);
+    GroupDto createGroup( GroupDto groupDto);
     GroupDto updateGroup(GroupDto groupDto);
+    void addEvent(UUID groupId, EventDto eventDto);
+    void removeEvent(UUID groupId, UUID eventId);
 
     void deleteGroup(UUID groupID);
 

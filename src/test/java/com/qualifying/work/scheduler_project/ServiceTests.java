@@ -31,7 +31,7 @@ public class ServiceTests {
     public void ownerCatalogTest(){
         UserDto user = new UserDto();
         user.setId(null);
-        user.setLogin("login");
+        user.setLogin("agdjrdkflogin");
         user.setPassword("1111");
         user.setUserCatalogList(new ArrayList<>());
         user.setGroups(new ArrayList<>());
@@ -39,7 +39,7 @@ public class ServiceTests {
 
         UserDto admin = new UserDto();
         admin.setId(null);
-        admin.setLogin("admin");
+        admin.setLogin(";oug;badmin");
         admin.setPassword("1234");
         admin.setUserCatalogList(new ArrayList<>());
         admin.setGroups(new ArrayList<>());
@@ -108,7 +108,7 @@ public class ServiceTests {
                 null,
                 "catalog1488",
                 admin.getId(),
-                null,
+                catalog1.getId(),
                 null,
                 null,
                 new ArrayList<>()
@@ -122,9 +122,10 @@ public class ServiceTests {
         assertEquals(userService.getAdmins(catalog1.getId()).size(), 1);
         assertEquals(userService.getAdmins(catalog1.getId()).get(0).getLogin(), admin.getLogin());
         assertEquals(userService.getAllUserCatalogs(user.getId()).size(), 2);
+        assertEquals(userService.getUserRootCatalogs(user.getId()).size(), 1);
 
         userService.removeCatalog(user.getId(), catalog1.getId());
-        assertEquals(userService.getAllUserCatalogs(user.getId()).size(), 1);
+        assertEquals(userService.getAllUserCatalogs(user.getId()).size(), 0);
     }
     @Test
     public void enrollAndRemoveGroupTest(){
@@ -153,12 +154,12 @@ public class ServiceTests {
 
         userService.enrollUserToGroup(user.getId(), groupDto1.getId());
         userService.enrollUserToGroup(user.getId(), groupDto2.getId());
-        assertEquals(userService.getUserById(user.getId()).getGroups().size(), 2);
+        assertEquals(userService.getAllUserGroups(user.getId()).size(), 2);
 
 
         userService.removeUserFromGroup(user.getId(), groupDto1.getId());
-        assertEquals(userService.getUserById(user.getId()).getGroups().size(), 1);
-        assertEquals(userService.getUserById(user.getId()).getGroups().get(0).getId(), groupDto2.getId());
+        assertEquals(userService.getAllUserGroups(user.getId()).size(), 1);
+        assertEquals(userService.getAllUserGroups(user.getId()).get(0).getId(), groupDto2.getId());
     }
 
     @Test

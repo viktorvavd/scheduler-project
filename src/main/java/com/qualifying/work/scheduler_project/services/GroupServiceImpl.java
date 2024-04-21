@@ -1,8 +1,12 @@
 package com.qualifying.work.scheduler_project.services;
 
+import com.qualifying.work.scheduler_project.dto.EventDto;
 import com.qualifying.work.scheduler_project.dto.GroupDto;
+import com.qualifying.work.scheduler_project.entities.Catalog;
 import com.qualifying.work.scheduler_project.entities.GroupEntity;
+import com.qualifying.work.scheduler_project.mappers.CatalogMapper;
 import com.qualifying.work.scheduler_project.mappers.GroupMapper;
+import com.qualifying.work.scheduler_project.repositories.CatalogRepository;
 import com.qualifying.work.scheduler_project.repositories.GroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -15,6 +19,7 @@ import java.util.UUID;
 public class GroupServiceImpl implements GroupService{
     final GroupRepository groupRepository;
     final GroupMapper groupMapper;
+
     @Override
     public List<GroupEntity> getAllGroupEntities() {
         return groupRepository.findAll();
@@ -59,6 +64,24 @@ public class GroupServiceImpl implements GroupService{
         }else{
             throw new RuntimeException("No GROUP with id:" + groupDto.getId());
         }
+    }
+
+    @Override
+    public void addEvent(UUID groupId, EventDto eventDto) {
+        GroupDto groupDto = getGroupById(groupId);
+        List<EventDto> eventDtos = groupDto.getEvents();
+        eventDtos.add(eventDto);
+        groupDto.setEvents(eventDtos);
+        updateGroup(groupDto);
+    }
+
+    @Override
+    public void removeEvent(UUID groupId, UUID eventId) {
+        GroupDto groupDto = getGroupById(groupId);
+        List<EventDto> eventDtos = groupDto.getEvents();
+        eventDtos.removeIf(eventDto -> eventDto.getId().equals(eventId));
+        groupDto.setEvents(eventDtos);
+        updateGroup(groupDto);
     }
 
     @Override

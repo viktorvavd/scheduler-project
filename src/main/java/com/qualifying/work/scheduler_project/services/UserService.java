@@ -14,6 +14,7 @@ public interface UserService {
 
     UserDto createUser(UserDto user);
     UserDto getUserById(UUID id);
+    UserDto getUserByLogin(String login);
     UserEntity getUserEntityById(UUID id);
     UserDto updateUser(UserDto user);
     void deleteUser(UUID id);
@@ -25,11 +26,13 @@ public interface UserService {
     void removeAdmin(UUID catalogId, String userLogin);
 
     List<CatalogDto> getAllUserCatalogs(UUID userId);
+    List<CatalogDto> getUserRootCatalogs(UUID userId);
     void addNewCatalog(UUID userId, CatalogDto catalogDto, boolean isAdmin);
     void removeCatalog(UUID userID, UUID catalogID);
     void enrollUserToGroup(UUID userID, UUID groupID);
     void removeUserFromGroup(UUID userID, UUID groupID);
     List<GroupDto> getAllUserGroups(UUID userID);
+    List<EventDto> getUserEvents(UUID userID, Date stratDate, Date endDate);
 //    List<EventDto> getSchedule(Date startDate, Date endDate);
 
     UserDto getCatalogOwner(UUID catalogId);

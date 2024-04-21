@@ -1,6 +1,7 @@
 package com.qualifying.work.scheduler_project.services;
 
 import com.qualifying.work.scheduler_project.dto.CatalogDto;
+import com.qualifying.work.scheduler_project.dto.EventDto;
 import com.qualifying.work.scheduler_project.dto.GroupDto;
 import com.qualifying.work.scheduler_project.dto.UserDto;
 import com.qualifying.work.scheduler_project.entities.Catalog;
@@ -17,7 +18,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -66,6 +71,15 @@ public class UserServiceImpl implements UserService{
         else{
             throw new RuntimeException("No such USER ID");
         }
+    }
+
+    @Override
+    public UserDto getUserByLogin(String login) {
+        UserEntity userEntity = userRepository.findByLogin(login);
+        if(userEntity == null){
+            throw new RuntimeException("No such USER login");
+        }
+        return userMapper.userEntityToDto(userEntity);
     }
 
     @Override
@@ -141,8 +155,6 @@ public class UserServiceImpl implements UserService{
         if(userId == null){
             throw new RuntimeException("UserID is null");
         }
-//        UserEntity userEntity = userMapper.userDtoToEntity(getUserById(userId));
-//        UserEntity userEntity = userRepository.findById(userId).orElseThrow();
         List<UserCatalog> userCatalogList = userCatalogRepository.findAllByUserId(userId);
 
         List<Catalog> catalogs = userCatalogList.stream().map(UserCatalog::getCatalog).toList();
@@ -151,6 +163,27 @@ public class UserServiceImpl implements UserService{
         for (Catalog catalog : catalogs) {
             catalogDtoList.add(catalogMapper.entityToDto(catalog));
         }
+        return catalogDtoList;
+    }
+
+    @Override
+    public List<CatalogDto> getUserRootCatalogs(UUID userId) {
+
+        if(userId == null){
+            throw new RuntimeException("UserID is null");
+        }
+        List<UserCatalog> userCatalogList = userCatalogRepository.findAllByUserId(userId);
+
+        List<Catalog> catalogs = new ArrayList<>(userCatalogList.stream().map(UserCatalog::getCatalog).toList());
+        List<CatalogDto> catalogDtoList = new ArrayList<>();
+        if(!catalogs.isEmpty()){
+            catalogs.removeIf(catalog -> catalog.getParentCatalog() != null);
+            for (Catalog catalog : catalogs) {
+                catalogDtoList.add(catalogMapper.entityToDto(catalog));
+            }
+        }
+
+
         return catalogDtoList;
     }
 
@@ -186,8 +219,18 @@ public class UserServiceImpl implements UserService{
         if(userID == null || catalogID == null){
             throw new RuntimeException("UserID or CatalogID is null");
         }
-        userCatalogRepository.deleteByUserIdAndCatalogId(userID, catalogID);
+        if(userID == catalogService.findById(catalogID).getOwnerID()){
+            catalogService.deleteById(catalogID);
+        }else {
+            userCatalogRepository.deleteByUserIdAndCatalogId(userID, catalogID);
+            List<CatalogDto> catalogList = catalogService.getChildCatalogs(catalogID);
+            List<UUID> childCatlogIdList = catalogList.stream().map(CatalogDto::getId).toList();
+            for (UUID childCatalogId : childCatlogIdList) {
+                userCatalogRepository.deleteByUserIdAndCatalogId(userID, childCatalogId);
+            }
+        }
     }
+
 
     @Override
     public void enrollUserToGroup(UUID userID, UUID groupID) {
@@ -226,5 +269,18 @@ public class UserServiceImpl implements UserService{
     @Override
     public List<GroupDto> getAllUserGroups(UUID userID) {
         return getUserById(userID).getGroups();
+    }
+
+    @Override
+    public List<EventDto> getUserEvents(UUID userID, Date startDate, Date endDate){
+        List<GroupDto> groups = getAllUserGroups(userID);
+        List<EventDto> events = new ArrayList<>();
+        for(GroupDto groupDto:groups){
+            events.addAll(groupDto.getEvents());
+        }
+        events.removeIf(eventDto ->
+                eventDto.getStartTime().before(startDate) ||
+                        eventDto.getEndTime().after(endDate));
+        return events;
     }
 }

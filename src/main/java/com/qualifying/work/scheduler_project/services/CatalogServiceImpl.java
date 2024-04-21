@@ -27,6 +27,7 @@ public class CatalogServiceImpl implements CatalogService{
     final UserCatalogRepository userCatalogRepository;
     final UserRepository userRepository;
     final UserMapper userMapper;
+    final GroupService groupService;
     @Override
     public List<CatalogDto> getAllCatalogs() {
         return catalogRepository.findAll().stream().map(catalogMapper::entityToDto).toList();
@@ -40,6 +41,15 @@ public class CatalogServiceImpl implements CatalogService{
     @Override
     @Transactional
     public CatalogDto createCatalog(CatalogDto catalogDto) {
+        if(catalogDto.getParentCatalogID() != null){
+            List<String> catalogNames =
+                    getChildCatalogs(catalogDto.getParentCatalogID()).stream().map(CatalogDto::getName).toList();
+            for(String name:catalogNames){
+                if(name.equals(catalogDto.getName())){
+                    throw new RuntimeException("Catalog with name:" + catalogDto.getName() + " already exists");
+                }
+            }
+        }
         catalogDto.setCode(generateCode());
         Catalog catalog = catalogMapper.dtoToEntity(catalogDto);
         catalog = catalogRepository.save(catalog);
@@ -55,13 +65,25 @@ public class CatalogServiceImpl implements CatalogService{
     }
 
     private String generateCode(){
-        String generateUUIDNo = String.format("%010d",new BigInteger(UUID.randomUUID().toString().replace("-",""),16));
+        String generateUUIDNo = String.format(
+                "%010d",new BigInteger(UUID.randomUUID().toString().replace("-",""),16)
+        );
         return generateUUIDNo.substring( generateUUIDNo.length() - 10);
     }
 
     @Override
     @Transactional
     public CatalogDto updateCatalog(CatalogDto catalogDto) {
+        if(catalogDto.getParentCatalogID() != null){
+            List<String> catalogNames =
+                    getChildCatalogs(catalogDto.getParentCatalogID()).stream().map(CatalogDto::getName).toList();
+            for(String name:catalogNames){
+                if(name.equals(catalogDto.getName())){
+                    throw new RuntimeException("Catalog with name:" + catalogDto.getName() + " already exists");
+                }
+            }
+        }
+        catalogDto.setOwnerID(findById(catalogDto.getId()).getOwnerID());
         Catalog catalog = catalogMapper.dtoToEntity(catalogDto);
         catalog = catalogRepository.save(catalog);
         return catalogMapper.entityToDto(catalog);
@@ -94,6 +116,32 @@ public class CatalogServiceImpl implements CatalogService{
         return catalogMapper.entityToDto(catalog);
     }
 
+    @Override
+    @Transactional
+    public CatalogDto addGroup(UUID catalogId, UUID groupId) {
+        if (getChildCatalogs(catalogId).isEmpty()) {
+            CatalogDto catalog = findById(catalogId);
+            List<GroupDto> groupDtos = catalog.getGroups();
+            groupDtos.add(groupService.getGroupById(groupId));
+            catalog.setGroups(groupDtos);
+            return updateCatalog(catalog);
+        } else {
+            throw new RuntimeException("This Catalog has child catalogs");
+        }
+    }
+
+    @Override
+    @Transactional
+    public CatalogDto addNewGroup(UUID catalogId, GroupDto groupDto) {
+        if(getChildCatalogs(catalogId).isEmpty()){
+            UUID groupId = groupService.createGroup(groupDto).getId();
+            return addGroup(catalogId,groupId);
+        }else{
+            throw new RuntimeException("This Catalog has child catalogs");
+        }
+
+    }
+
 
     @Override
     public CatalogDto getParentCatalog(UUID catalogID) {
@@ -102,7 +150,11 @@ public class CatalogServiceImpl implements CatalogService{
 
     @Override
     public List<CatalogDto> getChildCatalogs(UUID catalogID) {
-        return null;
+        if(catalogID == null || findById(catalogID) == null){
+            throw new RuntimeException("Wrong Catalog id:" + catalogID);
+        }
+        return catalogRepository.findAllByParentCatalogId(catalogID)
+                .stream().map(catalogMapper::entityToDto).toList();
     }
 
     @Override
