@@ -1,5 +1,6 @@
 package com.qualifying.work.scheduler_project.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.qualifying.work.scheduler_project.entities.GroupEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
@@ -23,8 +24,10 @@ public class EventDto {
     private String name;
 
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
     @NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
 //
 //    private GroupDto group;

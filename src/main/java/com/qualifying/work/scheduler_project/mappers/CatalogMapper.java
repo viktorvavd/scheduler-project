@@ -12,6 +12,8 @@ import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class CatalogMapper {
         catalogDto.setId(catalog.getId());
         catalogDto.setName(catalog.getName());
         catalogDto.setOwnerID(catalog.getOwner().getId());
+        catalogDto.setCode(catalog.getCode());
         if(catalog.getParentCatalog() == null){
             catalogDto.setParentCatalogID(null);
             catalogDto.setParentCatalogName(null);
@@ -49,6 +52,9 @@ public class CatalogMapper {
             parrentCatalog = null;
         }else{
            parrentCatalog = catalogRepository.findById(catalogDto.getParentCatalogID()).orElseThrow();
+        }
+        if(catalogDto.getGroups() == null){
+            catalogDto.setGroups(new ArrayList<>());
         }
 
         UserEntity owner = userRepository.findById(catalogDto.getOwnerID()).orElseThrow();

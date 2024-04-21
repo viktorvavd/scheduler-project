@@ -8,6 +8,7 @@ import com.qualifying.work.scheduler_project.services.CatalogService;
 import com.qualifying.work.scheduler_project.services.EventService;
 import com.qualifying.work.scheduler_project.services.GroupService;
 import com.qualifying.work.scheduler_project.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,27 +57,29 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/get_catalogs/create")
-    public ResponseEntity<CatalogDto> createUserRootCatalog(@PathVariable UUID userId, @RequestBody CatalogDto catalogDto){
+    public ResponseEntity<CatalogDto> createUserRootCatalog(@PathVariable UUID userId,
+                                                            @Valid @RequestBody CatalogDto catalogDto){
         catalogDto.setOwnerID(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(catalogService.createCatalog(catalogDto));
     }
 
     @GetMapping("/{userId}/get_catalogs/catalog")
-    public ResponseEntity<List<CatalogDto>> getChildCatalogs(@PathVariable UUID userId, @RequestParam UUID catalogId){
+    public ResponseEntity<List<CatalogDto>> getChildCatalogs(@PathVariable UUID userId,
+                                                             @RequestParam UUID catalogId){
         return ResponseEntity.ok(catalogService.getChildCatalogs(catalogId));
     }
 
 
     @PostMapping("/{userId}/get_catalogs/catalog/create")
     public ResponseEntity<CatalogDto> createChildCatalog(@PathVariable UUID userId,
-                                                               @RequestBody CatalogDto catalogDto){
+                                                         @Valid @RequestBody CatalogDto catalogDto){
         catalogDto.setOwnerID(userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(catalogService.createCatalog(catalogDto));
     }
 
     @PutMapping("/{userId}/get_catalogs/catalog/updateName")
     public ResponseEntity<CatalogDto> updateCatalogName(@PathVariable UUID userId,
-                                                        @RequestBody CatalogDto catalogDto){
+                                                        @Valid @RequestBody CatalogDto catalogDto){
         return ResponseEntity.status(HttpStatus.OK).body(catalogService.updateCatalog(catalogDto));
     }
 
@@ -117,22 +120,23 @@ public class UserController {
 
     @PutMapping("/{userId}/get_catalogs/catalog/groups/enroll_group")
     public ResponseEntity<Void> enrollGroup(@PathVariable UUID userId,
-                                         @RequestParam UUID catalogId, @RequestParam UUID groupId){
+                                            @RequestParam UUID groupId){
         userService.enrollUserToGroup(userId, groupId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{userId}/get_catalogs/catalog/create_group")
     public ResponseEntity<GroupDto> createGroup(@PathVariable UUID userId,
-                                            @RequestParam UUID catalogId, @RequestBody GroupDto groupDto){
+                                            @RequestParam UUID catalogId, @Valid @RequestBody GroupDto groupDto){
+        groupDto.setEvents(new ArrayList<>());
         groupDto = groupService.createGroup(groupDto);
         catalogService.addGroup(catalogId,groupDto.getId());
         userService.enrollUserToGroup(userId,groupDto.getId());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(groupDto);
     }
     @PutMapping("/{userId}/get_catalogs/catalog/group")
     public ResponseEntity<List<EventDto>> getGroupEvents(@PathVariable UUID userId,
-                                            @RequestParam UUID catalogId, @RequestParam UUID groupId){
+                                              @RequestParam UUID groupId){
         List<EventDto> eventDtos = groupService.getGroupById(groupId).getEvents();
         return ResponseEntity.ok(eventDtos);
     }

@@ -18,7 +18,7 @@ public class CatalogDto {
     @NotNull
     @NotBlank
     private String name;
-    @NotNull
+//    @NotNull
     private UUID ownerID;
     private UUID parentCatalogID;
     private String parentCatalogName;

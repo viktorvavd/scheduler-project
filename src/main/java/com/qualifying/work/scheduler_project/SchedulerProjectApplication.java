@@ -82,14 +82,13 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				new ArrayList<>()
 		);
 		groupDto = groupService.createGroup(groupDto);
+		catalogService.addGroup(catalog1.getId(), groupDto.getId());
 		userService.enrollUserToGroup(admin.getId(), groupDto.getId());
 
 		DateFormat formater =
 				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String strDate = "2024-4-20 12:30:00";
 		String endDate = "2024-4-20 13:30:00";
-
-		;
 
 
 		EventDto eventDto = new EventDto(
@@ -109,6 +108,7 @@ public class SchedulerProjectApplication implements CommandLineRunner {
                 formater.parse(end)).toArray())
 		);
 		System.out.println(admin.getId());
+		System.out.println(user.getId());
 
 
 //		userService.addNewCatalog(userAdmin.getId(), catalog2, true);

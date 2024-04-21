@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,10 +43,11 @@ public class CatalogServiceImpl implements CatalogService{
     @Transactional
     public CatalogDto createCatalog(CatalogDto catalogDto) {
         if(catalogDto.getParentCatalogID() != null){
-            List<String> catalogNames =
-                    getChildCatalogs(catalogDto.getParentCatalogID()).stream().map(CatalogDto::getName).toList();
-            for(String name:catalogNames){
-                if(name.equals(catalogDto.getName())){
+            List<CatalogDto> catalogs =
+                    getChildCatalogs(catalogDto.getParentCatalogID());
+            for(CatalogDto childCatalog:catalogs){
+                if(childCatalog.getName().equals(catalogDto.getName())
+                        && !catalogDto.getId().equals(childCatalog.getId())){
                     throw new RuntimeException("Catalog with name:" + catalogDto.getName() + " already exists");
                 }
             }
@@ -75,10 +77,11 @@ public class CatalogServiceImpl implements CatalogService{
     @Transactional
     public CatalogDto updateCatalog(CatalogDto catalogDto) {
         if(catalogDto.getParentCatalogID() != null){
-            List<String> catalogNames =
-                    getChildCatalogs(catalogDto.getParentCatalogID()).stream().map(CatalogDto::getName).toList();
-            for(String name:catalogNames){
-                if(name.equals(catalogDto.getName())){
+            List<CatalogDto> catalogs =
+                    getChildCatalogs(catalogDto.getParentCatalogID());
+            for(CatalogDto childCatalog:catalogs){
+                if(childCatalog.getName().equals(catalogDto.getName())
+                        && !catalogDto.getId().equals(childCatalog.getId())){
                     throw new RuntimeException("Catalog with name:" + catalogDto.getName() + " already exists");
                 }
             }
@@ -121,8 +124,9 @@ public class CatalogServiceImpl implements CatalogService{
     public CatalogDto addGroup(UUID catalogId, UUID groupId) {
         if (getChildCatalogs(catalogId).isEmpty()) {
             CatalogDto catalog = findById(catalogId);
-            List<GroupDto> groupDtos = catalog.getGroups();
-            groupDtos.add(groupService.getGroupById(groupId));
+            List<GroupDto> groupDtos = new ArrayList<>(catalog.getGroups());
+            GroupDto groupDto = groupService.getGroupById(groupId);
+            groupDtos.add(groupDto);
             catalog.setGroups(groupDtos);
             return updateCatalog(catalog);
         } else {
