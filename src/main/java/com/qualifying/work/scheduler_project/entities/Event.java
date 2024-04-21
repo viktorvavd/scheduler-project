@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -22,12 +23,12 @@ public class Event {
     private String name;
 
     @Column(nullable = false)
-    private Calendar startTime;
+    private Date startTime;
     @Column(nullable = false)
-    private Calendar endTime;
+    private Date endTime;
 
-    @ManyToOne
-    @JoinColumn(name = "group_id",nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private GroupEntity group;
+//    @ManyToOne
+//    @JoinColumn(name = "group_id",nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    private GroupEntity group;
 }

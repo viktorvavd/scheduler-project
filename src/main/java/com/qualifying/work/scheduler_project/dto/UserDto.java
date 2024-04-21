@@ -6,9 +6,7 @@ import lombok.*;
 import java.util.List;
 import java.util.UUID;
 
-//@Data
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
@@ -19,4 +17,5 @@ public class UserDto {
     @NotNull
     private String password;
     private List<UserCatalogDto> userCatalogList;
+    private List<GroupDto> groups;
 }

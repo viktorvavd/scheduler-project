@@ -4,7 +4,7 @@ import com.qualifying.work.scheduler_project.dto.EventDto;
 import com.qualifying.work.scheduler_project.entities.Event;
 import org.mapstruct.Mapper;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface EventMapper {
     Event dtoToEntity(EventDto eventDto);
     EventDto entityToDto(Event event);

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.math.BigInteger;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,11 +22,19 @@ public class Catalog {
 
     @Column(nullable = false)
     private String name;
-    @OneToOne
+    @ManyToOne
     private UserEntity owner;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(nullable = false, unique = true)
+    private String code;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Catalog parentCatalog;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "catalog_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private List<GroupEntity> groups;
 
 }
