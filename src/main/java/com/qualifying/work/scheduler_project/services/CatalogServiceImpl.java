@@ -86,7 +86,9 @@ public class CatalogServiceImpl implements CatalogService{
                 }
             }
         }
-        catalogDto.setOwnerID(findById(catalogDto.getId()).getOwnerID());
+        CatalogDto oldCatalogDto = findById(catalogDto.getId());
+        catalogDto.setOwnerID(oldCatalogDto.getOwnerID());
+        catalogDto.setCode(oldCatalogDto.getCode());
         Catalog catalog = catalogMapper.dtoToEntity(catalogDto);
         catalog = catalogRepository.save(catalog);
         return catalogMapper.entityToDto(catalog);

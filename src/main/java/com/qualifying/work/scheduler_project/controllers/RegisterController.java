@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 
 @RestController
-//@RequestMapping(value = "/login")
 @RequiredArgsConstructor
 public class RegisterController {
     final UserService userService;
