@@ -71,7 +71,7 @@ public class EventServiceImpl implements EventService{
                         null,
                         eventDto.getName(),
                         addDays(eventDto.getStartTime(), i * 7),
-                        addDays(eventDto.getStartTime(), i * 7),
+                        addDays(eventDto.getEndTime(), i * 7),
                         eventDto.getWeeklyRepeatUntil()
                 );
                 Event repeatableEvent = eventRepository.save(eventMapper.dtoToEntity(repeatableEventDto));
@@ -98,15 +98,25 @@ public class EventServiceImpl implements EventService{
 
     @Override
     @Transactional
-    public EventDto updateEvent(EventDto eventDto) {
+    public EventDto updateEvent(EventDto eventDto, UUID groupId) {
         if(eventRepository.findById(eventDto.getId()).isPresent()){
-            Event event = eventRepository.save(eventMapper.dtoToEntity(eventDto));
-            List<Event> repeatableEvents = eventRepository.findAllByName(eventDto.getName());
-            for(Event repEvent: repeatableEvents){
-                repEvent.setName(event.getName());
-                eventRepository.save(repEvent);
+            String oldEventName = getEventEntityById(eventDto.getId()).getName();
+            Date untilDate = getEventEntityById(eventDto.getId()).getWeeklyRepeatUntil();
+            EventDto updateEvent = new EventDto();
+            GroupDto group = groupService.getGroupById(groupId);
+            List<EventDto> eventDtos = group.getEvents();
+            for(EventDto repeatableEvent: eventDtos){
+                if(repeatableEvent.getName().equals(oldEventName)
+                        && untilDate.equals(repeatableEvent.getWeeklyRepeatUntil())){
+                    repeatableEvent.setName(eventDto.getName());
+                    eventRepository.save(eventMapper.dtoToEntity(repeatableEvent));
+                }
+                if(eventDto.getId().equals(repeatableEvent.getId())){
+                    updateEvent = repeatableEvent;
+                }
             }
-            return eventMapper.entityToDto(event);
+
+            return updateEvent;
         }else{
             throw new RuntimeException("No EVENT with id:" + eventDto.getId());
         }

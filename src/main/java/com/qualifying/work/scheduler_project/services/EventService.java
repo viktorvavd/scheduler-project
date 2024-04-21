@@ -12,6 +12,6 @@ public interface EventService {
     Event getEventEntityById(UUID eventId);
     EventDto getEventById(UUID eventId);
     EventDto createEvent(EventDto eventDto, UUID groupId);
-    EventDto updateEvent(EventDto eventDto);
+    EventDto updateEvent(EventDto eventDto, UUID groupId);
     void deleteEvent(UUID eventId);
 }

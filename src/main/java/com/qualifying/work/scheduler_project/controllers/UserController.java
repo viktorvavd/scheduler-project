@@ -156,9 +156,9 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/get_catalogs/catalog/group/edit_event")
-    public ResponseEntity<EventDto> editEvent(@PathVariable UUID userId,
+    public ResponseEntity<EventDto> editEvent(@PathVariable UUID userId, @RequestParam UUID group_id,
                                              @RequestBody EventDto eventDto){
-        eventDto = eventService.updateEvent(eventDto);
+        eventDto = eventService.updateEvent(eventDto, group_id);
         return ResponseEntity.ok(eventDto);
     }
 

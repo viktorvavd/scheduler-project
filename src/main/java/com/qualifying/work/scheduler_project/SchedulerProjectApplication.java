@@ -99,7 +99,15 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				new Date(formater.parse(endDate).getTime()),
 				new Date(formater.parse(repeat).getTime())
 		);
-		eventService.createEvent(eventDto, groupDto.getId());
+		eventDto = eventService.createEvent(eventDto, groupDto.getId());
+		EventDto eventDto2 = new EventDto(
+				eventDto.getId(),
+				"New exam",
+				new Date(formater.parse(strDate).getTime()),
+				new Date(formater.parse(endDate).getTime()),
+				new Date(formater.parse(repeat).getTime())
+		);
+		eventService.updateEvent(eventDto2, groupDto.getId());
 
 
 		String start = "2024-4-19 00:00:00";
