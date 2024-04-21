@@ -10,7 +10,11 @@ import com.qualifying.work.scheduler_project.repositories.GroupRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+//import java.util.*;
 
+import java.time.*;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -54,14 +58,42 @@ public class EventServiceImpl implements EventService{
     public EventDto createEvent(EventDto eventDto, UUID groupId) {
         Event event = eventMapper.dtoToEntity(eventDto);
         event = eventRepository.save(event);
-
         GroupEntity group = groupService.getGroupEntityById(groupId);
         List<Event> events = group.getEvents();
         events.add(event);
 
+        if(eventDto.getWeeklyRepeatUntil() != null) {
+            LocalDateTime date1 = convertToLocalDateTime(eventDto.getStartTime());
+            LocalDateTime date2 = convertToLocalDateTime(eventDto.getWeeklyRepeatUntil());
+            Duration duration = Duration.between(date1, date2);
+            for (int i = 1; i <= duration.toDays() / 7; i++) {
+                EventDto repeatableEventDto = new EventDto(
+                        null,
+                        eventDto.getName(),
+                        addDays(eventDto.getStartTime(), i * 7),
+                        addDays(eventDto.getStartTime(), i * 7),
+                        eventDto.getWeeklyRepeatUntil()
+                );
+                Event repeatableEvent = eventRepository.save(eventMapper.dtoToEntity(repeatableEventDto));
+                events.add(repeatableEvent);
+            }
+        }
         group.setEvents(events);
         groupRepository.save(group);
         return eventMapper.entityToDto(event);
+    }
+
+    public Date addDays(Date date, int days) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.DATE, days); //minus number would decrement the days
+        return cal.getTime();
+    }
+
+    private LocalDateTime convertToLocalDateTime(Date dateToConvert) {
+        return Instant.ofEpochMilli(dateToConvert.getTime())
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     @Override
@@ -69,6 +101,11 @@ public class EventServiceImpl implements EventService{
     public EventDto updateEvent(EventDto eventDto) {
         if(eventRepository.findById(eventDto.getId()).isPresent()){
             Event event = eventRepository.save(eventMapper.dtoToEntity(eventDto));
+            List<Event> repeatableEvents = eventRepository.findAllByName(eventDto.getName());
+            for(Event repEvent: repeatableEvents){
+                repEvent.setName(event.getName());
+                eventRepository.save(repEvent);
+            }
             return eventMapper.entityToDto(event);
         }else{
             throw new RuntimeException("No EVENT with id:" + eventDto.getId());

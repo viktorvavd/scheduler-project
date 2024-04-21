@@ -27,6 +27,8 @@ public class Event {
     @Column(nullable = false)
     private Date endTime;
 
+    private Date weeklyRepeatUntil;
+
 //    @ManyToOne
 //    @JoinColumn(name = "group_id",nullable = false)
 //    @OnDelete(action = OnDeleteAction.CASCADE)

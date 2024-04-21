@@ -89,19 +89,21 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String strDate = "2024-4-20 12:30:00";
 		String endDate = "2024-4-20 13:30:00";
+		String repeat = "2024-5-12 00:00:00";
 
 
 		EventDto eventDto = new EventDto(
 				null,
 				"Exam",
 				new Date(formater.parse(strDate).getTime()),
-				new Date(formater.parse(endDate).getTime())
+				new Date(formater.parse(endDate).getTime()),
+				new Date(formater.parse(repeat).getTime())
 		);
 		eventService.createEvent(eventDto, groupDto.getId());
 
 
 		String start = "2024-4-19 00:00:00";
-		String end = "2024-4-21 13:30:00";
+		String end = "2024-6-21 13:30:00";
 		System.out.println(Arrays.toString(userService.getUserEvents(
                 admin.getId(),
                 formater.parse(start),
