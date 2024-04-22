@@ -10,7 +10,6 @@ import com.qualifying.work.scheduler_project.repositories.GroupRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-//import java.util.*;
 
 import java.time.*;
 import java.util.Calendar;
