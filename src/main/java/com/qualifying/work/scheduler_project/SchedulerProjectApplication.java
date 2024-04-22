@@ -100,8 +100,8 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				new Date(formater.parse(repeat).getTime())
 		);
 		eventDto = eventService.createEvent(eventDto, groupDto.getId());
-		strDate = "2024-4-23 18:00:00";
-		endDate = "2024-4-23 19:20:00";
+		strDate = "2024-4-23 16:30:00";
+		endDate = "2024-4-23 17:50:00";
 		EventDto eventDto2 = new EventDto(
 				null,
 				"Психологія переговорів: Лекція",
@@ -110,6 +110,16 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				null
 		);
 		eventDto2 = eventService.createEvent(eventDto2, groupDto.getId());
+		strDate = "2024-4-23 18:00:00";
+		endDate = "2024-4-23 19:20:00";
+		EventDto eventDto7 = new EventDto(
+				null,
+				"Психологія переговорів: Семінар",
+				new Date(formater.parse(strDate).getTime()),
+				new Date(formater.parse(endDate).getTime()),
+				null
+		);
+		eventDto7 = eventService.createEvent(eventDto7, groupDto.getId());
 		strDate = "2024-4-25 19:30:00";
 		endDate = "2024-4-25 20:50:00";
 		EventDto eventDto3 = new EventDto(
@@ -130,6 +140,26 @@ public class SchedulerProjectApplication implements CommandLineRunner {
 				null
 		);
 		eventDto4 = eventService.createEvent(eventDto4, groupDto.getId());
+		strDate = "2024-4-26 14:40:00";
+		endDate = "2024-4-26 16:00:00";
+		EventDto eventDto5 = new EventDto(
+				null,
+				"Spring Boot: Лекція",
+				new Date(formater.parse(strDate).getTime()),
+				new Date(formater.parse(endDate).getTime()),
+				null
+		);
+		eventDto5 = eventService.createEvent(eventDto5, groupDto.getId());
+		strDate = "2024-4-26 16:30:00";
+		endDate = "2024-4-26 17:50:00";
+		EventDto eventDto6 = new EventDto(
+				null,
+				"Spring Boot: Практика",
+				new Date(formater.parse(strDate).getTime()),
+				new Date(formater.parse(endDate).getTime()),
+				null
+		);
+		eventDto6 = eventService.createEvent(eventDto6, groupDto.getId());
 //		eventService.updateEvent(eventDto2, groupDto.getId());
 
 
